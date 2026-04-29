@@ -51,12 +51,15 @@ body{
 .infoarea{
     width: 100vw;
     height: 8vw;
-    background-color: green;
+    color: white;
+    display: flex;
+    justify-content: space-evenly;
 }
-.actionsarea{
-    width: 100vw;
-    height: 5vw;
-    background-color: yellow;
+.infoarea>div{
+    display: flex;
+    flex-direction: column;
+    font-size: 0.5rem;
+    justify-content: center;
 }
 
 /* windows page */
@@ -128,7 +131,19 @@ form{
     height: 1.8rem;   
     border-radius: 15%; 
     max-height: 100%;
+    cursor: pointer;
 }
+.symbolCon .x:hover{
+    transform: scale(0.95);
+    background-color: var(--ocolor);
+    box-shadow: 0.1rem 0.2rem 0.2rem var(--xcolor);
+}
+.symbolCon .o:hover{
+    transform: scale(0.95);
+    background-color: var(--xcolor);
+    box-shadow: 0.1rem 0.2rem 0.2rem var(--ocolor);
+}
+
 .symbols .header{
     color: rgb(255, 255, 255);
     font-size: .8rem;
@@ -137,7 +152,7 @@ form{
     margin-top: 2%;
 }
 
-
+/* player options / game mode */
 .playersOps{
     background-image: url(toolsbox/window.jpg);
     background-position: center;
@@ -159,6 +174,12 @@ form{
     height: 40%;
     margin-left: 20%;
     border-radius: 25%;
+    cursor: pointer;
+}
+.playersOps div:hover{
+    transform: scale(0.95);
+    background-color: var(--ocolor);
+    box-shadow: 0.1rem 0.2rem 0.2rem var(--xcolor);
 }
 .playersOps .ai{
     background: no-repeat center/90% url(toolsbox/ai.png);
@@ -178,7 +199,6 @@ form{
     position: absolute;
     width: 100vw;
     height: 100vh;
-    /* overflow: hidden; */
     top: 1%;
 }
 .startgame .btn{

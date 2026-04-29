@@ -2,28 +2,67 @@
 const body = document.querySelector('body')
 const boxes = document.querySelectorAll('.griditem')
 const gamearea = document.querySelector('.gamearea')
+const infoarea = document.querySelector('.ifoarea')
+const nameA = document.querySelector('.nameA')
+const nameB = document.querySelector('.nameB')
+const symbolA = document.querySelector('.symbolA')
+const symbolB = document.querySelector('.symbolB')
+const scoreA = document.querySelector('.scoreA')
+const scoreB = document.querySelector('.scoreB')
 
 let gameOps = {
     mode: '',
     name1: '',
     name2: '',
     symbol1: '',
-    symbol2: ''
+    symbol2: '',
+    score1: 0,
+    score2: 0
 }
 
 
 
 // win condition
+function reset(){
+    const boxes = Array.from(document.querySelectorAll('.griditem'))
+    boxes.forEach(e=> e.textContent = '')
+}
 function boxCon(n){
     return boxes[n].textContent
 }
 function diagnal(symbol){
     if(boxCon(4) == symbol){
         if(boxCon(0) == symbol && boxCon(8) == symbol){
-            alert(`${symbol} won`)
+            let player = ''
+            if(symbol == gameOps.symbol1){player = gameOps.name1}
+            else{player = gameOps.name2}
+            alert(`${player} won`)
+            if(symbol == gameOps.symbol1){
+            gameOps.score1 += 1
+            scoreB.textContent = gameOps.score2
+            scoreA.textContent = gameOps.score1
+            }
+            else{gameOps.score2 += 1
+                scoreB.textContent = gameOps.score2
+                scoreA.textContent = gameOps.score1
+            }
+            reset()
         }
         else if(boxCon(2) == symbol && boxCon(6) == symbol){
-            alert(`${symbol} won`)
+            let player = ''
+            if(symbol == gameOps.symbol1){player = gameOps.name1}
+            else{player = gameOps.name2}
+            alert(`${player} won`)
+            if(symbol == gameOps.symbol1){
+            gameOps.score1 += 1
+            scoreB.textContent = gameOps.score2
+            scoreA.textContent = gameOps.score1
+            }
+            else{gameOps.score2 += 1
+                scoreB.textContent = gameOps.score2
+                scoreA.textContent = gameOps.score1
+            }
+            reset()
         }
     }
 }
@@ -33,7 +72,20 @@ function vertical(symbol){
             boxCon(i) == boxCon(i+3) 
             && boxCon(i) == boxCon(i+6) 
             && boxCon(i) != ''){
-            alert(`${symbol} won`)
+            let player = ''
+            if(symbol == gameOps.symbol1){player = gameOps.name1}
+            else{player = gameOps.name2}
+            alert(`${player} won`)
+            if(symbol == gameOps.symbol1){
+            gameOps.score1 += 1
+            scoreB.textContent = gameOps.score2
+            scoreA.textContent = gameOps.score1
+            }
+            else{gameOps.score2 += 1
+                scoreB.textContent = gameOps.score2
+                scoreA.textContent = gameOps.score1
+            }
+            reset()
         }
     }
 }
@@ -43,19 +95,60 @@ function horizantal(symbol){
             boxCon(i) == boxCon(i+1) 
             && boxCon(i) == boxCon(i+2) 
             && boxCon(i) != ''){
-            alert(`${symbol} won`)
+            let player = ''
+            if(symbol == gameOps.symbol1){player = gameOps.name1}
+            else{player = gameOps.name2}
+            alert(`${player} won`)
+            if(symbol == gameOps.symbol1){
+            gameOps.score1 += 1
+            scoreB.textContent = gameOps.score2
+            scoreA.textContent = gameOps.score1
+            }
+            else{gameOps.score2 += 1
+                scoreB.textContent = gameOps.score2
+                scoreA.textContent = gameOps.score1
+            }
+            reset()
         }
     }
 }
+function draw(){
+    const boxes = Array.from(document.querySelectorAll('.griditem'))
+    const emptyboxes = boxes.filter(box=>box.textContent == '')
+    if(emptyboxes.length == 0){
+        alert(`GG it's a draw`)
+        reset()
+    }
+    else return
+}
 
-// game logic for 2 players
 let isXturn = true
+// ai function
+const aiGameplay = function(){
+    if(gameOps.mode == 'ai'){
+        const boxes = Array.from(document.querySelectorAll('.griditem'))
+        const emptyboxes = boxes.filter(box=>box.textContent == '')
+        const n = Math.floor(Math.random()*emptyboxes.length)
+        if(emptyboxes.length == 0)return
+        emptyboxes[n].textContent = gameOps.symbol2
+        if(gameOps.symbol2 == 'X'){
+            emptyboxes[n].style.color = 'var(--xcolor)'
+        }
+        else{emptyboxes[n].style.color = 'var(--ocolor)'}
+        isXturn = !isXturn
+    }
+}
+// game logic for 2 players
 gamearea.addEventListener('click', e=>{
     const box = e.target.closest('.griditem')
     if(box.textContent != ''){return}
-    box.textContent = isXturn ? 'X' : 'O'
+    if(gameOps.mode == 'twoplayers'){
+        box.textContent = isXturn ? 'X' : 'O'
+    }
+    else{box.textContent = gameOps.symbol1}
     box.style.color = isXturn ? 'var(--xcolor)' : 'var(--ocolor)'
     isXturn = !isXturn
+    aiGameplay()
     setTimeout(() => {
         diagnal('X')
         diagnal('O')
@@ -63,6 +156,7 @@ gamearea.addEventListener('click', e=>{
         vertical('O')
         horizantal('X')
         horizantal('O')
+        draw()
     }, 200)
 })
 
@@ -95,8 +189,10 @@ const startGameBtn = function(){
     const btn = document.querySelector('.btn')
     btn.addEventListener('click', e=>{
         startgame.remove()
-        if(gameOps.mode == 'ai'){
-            console.log('ai')
+        const boxes = Array.from(document.querySelectorAll('.griditem'))
+        const emptyboxes = boxes.filter(box=>box.textContent == '')
+        if(gameOps.symbol1 == 'O' && emptyboxes.length == 9){
+            aiGameplay()
         }
     })
 }
@@ -169,6 +265,8 @@ playersOps.addEventListener('click', e=>{
             form.remove()
             gameOps.name1 = p1Input.value
             gameOps.name2 = p2Input.value
+            nameA.textContent = gameOps.name1
+            nameB.textContent = gameOps.name2
             getSymbolWindow()
         })
         playersOps.remove()
@@ -194,7 +292,10 @@ playersOps.addEventListener('click', e=>{
             playersOps.remove()
             gameOps.name1 = p1Input.value
             gameOps.name2 = 'ai'
+            nameA.textContent = gameOps.name1
+            nameB.textContent = 'Computer'
             getSymbolWindow()
         })
     }
 })
+
